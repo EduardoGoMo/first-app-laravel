@@ -20,3 +20,6 @@ Route::get('/', function () {
 Route::get('/about',function(){
     return '<h1>About Page</h1><a href="/">Back to home<a>';
 });
+Route::get('/xd',function(){
+    return 'xd;';
+});
