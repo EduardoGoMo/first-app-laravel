@@ -9,7 +9,7 @@
     
             <div class="form-group">
                 <label for="post-body" class="text-muted mb-1"><small>Body Content</small></label>
-                <textarea name="body" id="post-body" class="body-content tall-textarea form-control" type="text">{{old('title')}}</textarea>
+                <textarea name="body" id="post-body" class="body-content tall-textarea form-control" type="text">{{old('title ')}}</textarea>
             </div>
     
             <button class="btn btn-primary">Save New Post</button>

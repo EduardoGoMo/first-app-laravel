@@ -33,6 +33,11 @@ class UserController extends Controller
         }
     }
 
+    //mostrar perfil de usuario
+    public function showProfile(User $user){
+        return view('profile-post',['username'=>$user['username'],'posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+    }
+
     //cerrar sesión
     public function logout(){
         auth()->logout();
