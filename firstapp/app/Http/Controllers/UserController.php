@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class UserController extends Controller
 {
@@ -57,5 +60,28 @@ class UserController extends Controller
         $user = User::create($entradas);
         auth()->login($user);
         return redirect('/')->with('success','Cuenta creada');
+    }
+
+    public function showAvatarForm(){
+        return view('avatar-form');
+    }
+
+    public function storeAvatar(Request $request){
+        $request->validate([
+            'avatar' => 'required|image|max:3000'
+        ]);
+
+        $user = auth()->user();
+        $filename = $user->id . '-' . uniqid() . '.jpg';
+
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($request->file('avatar'));
+        $imgData = $image->cover(120,120)->toJpeg();
+        Storage::put("public/avatars/" . $filename, $imgData);
+
+        $user->avatar = $filename;
+        $user->save();
+
+        return redirect('/')->with('success','Avatar actualizado');
     }
 }

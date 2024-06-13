@@ -1,6 +1,7 @@
 <x-layout>
     <div class="container py-md-5 container--narrow">
         <form action="/post/{{$post->id}}" method="POST">
+            <p><small><strong><a href="/post/{{$post->id}}">&laquo; Regresar al post original</a></strong></small></p>
             @csrf
             @method('PUT')
             <div class="form-group">
