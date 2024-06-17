@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Intervention\Image\ImageManager;
@@ -38,7 +39,12 @@ class UserController extends Controller
 
     //mostrar perfil de usuario
     public function showProfile(User $user){
-        return view('profile-post',['username'=>$user['username'],'posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+        $currentlyFollowing = 0;
+        if (auth()->check()) {
+            $currentlyFollowing = Follow::where([['user_id','=',auth()->user()->id],['followeduser','=',$user->id]])->count();
+        }
+
+        return view('profile-post',['currentlyFollowing' => $currentlyFollowing,'avatar'=> $user->avatar,'username'=>$user['username'],'posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
     }
 
     //cerrar sesión
@@ -62,10 +68,12 @@ class UserController extends Controller
         return redirect('/')->with('success','Cuenta creada');
     }
 
+    //cambiar avatar
     public function showAvatarForm(){
         return view('avatar-form');
     }
 
+    //almacenar avatar
     public function storeAvatar(Request $request){
         $request->validate([
             'avatar' => 'required|image|max:3000'
@@ -79,9 +87,15 @@ class UserController extends Controller
         $imgData = $image->cover(120,120)->toJpeg();
         Storage::put("public/avatars/" . $filename, $imgData);
 
+        $oldAvatar = $user->avatar;
+        
         $user->avatar = $filename;
         $user->save();
+        
+        if ($oldAvatar != "/fallback-avatar.jpg") {
+            Storage::delete(str_replace("/storage/","public/", $oldAvatar));
+        }
 
-        return redirect('/')->with('success','Avatar actualizado');
+        return back()->with('success','Avatar actualizado');
     }
 }
