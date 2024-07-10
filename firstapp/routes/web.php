@@ -46,3 +46,5 @@ Route::put('/post/{post}',[PostController::class, 'updatePost'])->middleware('ca
 
 //profile related routes
 Route::get('/profile/{user:username}',[UserController::class, 'showProfile']);
+Route::get('/profile/{user:username}/followers',[UserController::class, 'showFollowers']);
+Route::get('/profile/{user:username}/following',[UserController::class, 'showFollowing']);

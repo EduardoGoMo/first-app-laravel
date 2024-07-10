@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\View;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -37,14 +38,31 @@ class UserController extends Controller
         }
     }
 
-    //mostrar perfil de usuario
-    public function showProfile(User $user){
+    // obtener la data del usuario
+    private function getShareData($user){
         $currentlyFollowing = 0;
         if (auth()->check()) {
             $currentlyFollowing = Follow::where([['user_id','=',auth()->user()->id],['followeduser','=',$user->id]])->count();
         }
+        View::share('sharedData',['currentlyFollowing' => $currentlyFollowing,'avatar'=> $user->avatar,'username'=>$user['username'], 'posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+    }
 
-        return view('profile-post',['currentlyFollowing' => $currentlyFollowing,'avatar'=> $user->avatar,'username'=>$user['username'],'posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+    //mostrar perfil de usuario
+    public function showProfile(User $user){
+        $this->getShareData($user);
+        return view('profile-post',['posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+    }
+
+    // mostrar seguidores
+    public function showFollowers(User $user){
+        $this->getShareData($user);
+        return view('followers',['posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+    }
+
+    // mostrar usuarios que seguimos
+    public function showFollowing(User $user){
+        $this->getShareData($user);
+        return view('following' ,['posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
     }
 
     //cerrar sesión
