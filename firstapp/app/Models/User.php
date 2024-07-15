@@ -49,7 +49,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    //relacion con los posts
     public function posts(){
         return $this->hasMany(Post::class, 'user_id');
+    }
+
+    //relacion con los seguidos
+    public function followingTheseUsers(){
+        return $this->hasMany(Follow::class, 'user_id');
+    }
+
+    //relacion con los seguidores
+    public function followers(){
+        return $this->hasMany(Follow::class, 'followeduser');
     }
 }

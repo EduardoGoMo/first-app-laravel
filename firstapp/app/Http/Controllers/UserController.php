@@ -38,31 +38,31 @@ class UserController extends Controller
         }
     }
 
-    // obtener la data del usuario
+    // obtener la información de feed del usuario
     private function getShareData($user){
         $currentlyFollowing = 0;
         if (auth()->check()) {
             $currentlyFollowing = Follow::where([['user_id','=',auth()->user()->id],['followeduser','=',$user->id]])->count();
         }
-        View::share('sharedData',['currentlyFollowing' => $currentlyFollowing,'avatar'=> $user->avatar,'username'=>$user['username'], 'posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+        View::share('sharedData',['currentlyFollowing' => $currentlyFollowing,'avatar'=> $user->avatar,'username'=>$user['username'], 'posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count(), 'followersCount'=>$user->followers()->count(), 'followingCount'=>$user->followingTheseUsers()->count()]);
     }
 
-    //mostrar perfil de usuario
+    //mostrar posts del usuario
     public function showProfile(User $user){
         $this->getShareData($user);
-        return view('profile-post',['posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+        return view('profile-post', ['posts'=>$user->posts()->latest()->get()]);
     }
 
     // mostrar seguidores
     public function showFollowers(User $user){
         $this->getShareData($user);
-        return view('followers',['posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+        return view('followers', ['followers'=>$user->followers()->latest()->get()]);
     }
 
     // mostrar usuarios que seguimos
     public function showFollowing(User $user){
         $this->getShareData($user);
-        return view('following' ,['posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count()]);
+        return view('following', ['following'=>$user->followingTheseUsers()->latest()->get()]);
     }
 
     //cerrar sesión
