@@ -18,9 +18,6 @@ use App\Http\Controllers\FollowController;
 |
 */
 
-// Example route
-Route::get('/test', [ExampleController::class, 'test']);
-
 
 //Admin related routes
 Route::get('/admins-only', function () {
