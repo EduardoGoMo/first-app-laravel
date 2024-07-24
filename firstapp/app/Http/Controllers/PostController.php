@@ -57,4 +57,11 @@ class PostController extends Controller
         $post->body = strip_tags(Str::markdown($post->body), '<p><img><h1><h2><h3><ul><ol><li><em><strong><br>');
         return view('single-post', ['post' => $post]);
     }
+
+    //función buscar publicación
+    public function search($term){
+        $posts = Post::search($term)->get();
+        $posts->load('user:id,username,avatar');
+        return $posts;
+    }
 }
