@@ -49,6 +49,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    //relacion de imágenes con usuario
+    public function images(){
+        return $this->hasMany(UserImage::class, 'user_id');
+    }
+
     //Relación de a quienes sigues con los post que ha hecho
     public function feedPosts(){
         return $this->hasManyThrough(Post::class, Follow::class, 'user_id', 'user_id', 'id', 'followeduser');

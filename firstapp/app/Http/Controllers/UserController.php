@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Follow;
+use App\Models\UserImage;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\View;
-use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class UserController extends Controller
@@ -39,12 +40,20 @@ class UserController extends Controller
     }
 
     // obtener la información de feed del usuario
-    private function getShareData($user){
+    private function getShareData(User $user){
         $currentlyFollowing = 0;
         if (auth()->check()) {
             $currentlyFollowing = Follow::where([['user_id','=',auth()->user()->id],['followeduser','=',$user->id]])->count();
         }
-        View::share('sharedData',['currentlyFollowing' => $currentlyFollowing,'avatar'=> $user->avatar,'username'=>$user['username'], 'posts'=>$user->posts()->latest()->get(), 'postCount'=>$user->posts()->count(), 'followersCount'=>$user->followers()->count(), 'followingCount'=>$user->followingTheseUsers()->count()]);
+        View::share('sharedData',[
+            'currentlyFollowing' => $currentlyFollowing,
+            'avatar'=> $user->avatar,
+            'username'=>$user['username'], 
+            'postCount'=>$user->posts()->count(), 
+            'followersCount'=>$user->followers()->count(), 
+            'followingCount'=>$user->followingTheseUsers()->count(), 
+            'gallery'=>$user->images()->latest()->get()
+        ]);
     }
 
     //mostrar posts del usuario
@@ -115,5 +124,30 @@ class UserController extends Controller
         }
 
         return back()->with('success','Avatar actualizado');
+    }
+
+    //mostrar formulario de galería
+    public function showGalleryForm(User $user){
+        $this->getShareData($user);
+        return view('gallery-form');
+    }
+    
+    //agregar imágenes a la galería
+    public function storeGallery(Request $request){
+        $user = auth()->user();
+        $images = $request->validate(['image.*' => ['required','mimes','max:5000']]);
+        
+        foreach ($images as $image) {
+            $filename = $user->id . '-' . uniqid() . '.jpg';
+            
+            Storage::put("public/gallery/" . $filename);
+            
+            $user_images = new UserImage();
+            $user_images->user_id = $user->id;
+            $user_images->image = $filename;
+            $user_images->save();
+        }
+        
+        return back()->with('success','Galería actualizada');
     }
 }
