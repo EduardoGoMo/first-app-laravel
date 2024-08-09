@@ -47,7 +47,9 @@ Route::get('search/{term}',[PostController::class, 'search']);
 // Route::post()
 
 //profile related routes
-Route::get('/profile/{user:username}',[UserController::class, 'showProfile']);
+Route::get('/profile/{user:username}',[UserController::class, 'showProfile'])->name('user.showProfile');
 Route::get('/profile/{user:username}/followers',[UserController::class, 'showFollowers']);
 Route::get('/profile/{user:username}/following',[UserController::class, 'showFollowing']);
+Route::get('/profile/{user:username}/form-gallery', [UserController::class, 'showGalleryForm'])->name('user.showGalleryForm');
+Route::post('/profile/{username}/store-gallery', [UserController::class, 'storeGallery'])->name('user.storeGallery');
 
