@@ -16,19 +16,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
-    
-    {{-- Estilos de dropzone
-    <link href="{{ asset('css/dropzone.css') }}" rel="stylesheet">
-    <script src="{{ asset('js/dropzone-config.js') }}"></script>
-
-        Estilos de owl carousel
-    <link href="{{ asset('css/owl.carousel.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/owl.theme.default.css') }}" rel="stylesheet">
-    <script src="{{ asset('js/owl.carousel.js') }}"></script> --}}
 
     {{-- Estilos de la galería y vistas --}}
     @vite(['resources/css/app.css'])
     @vite(['resources/js/app.js'])
+
   </head>
   
   <body>
