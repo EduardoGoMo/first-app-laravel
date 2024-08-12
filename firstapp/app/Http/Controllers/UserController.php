@@ -142,12 +142,13 @@ class UserController extends Controller
             
             Storage::put("public/gallery/" . $filename);
             
-            $user_images = new UserImage();
-            $user_images->user_id = $user->id;
-            $user_images->image = $filename;
-            $user_images->save();
+            $manager = new ImageManager(new Driver());
+            userImage::create([
+                'user_id' => $user->id,
+                'filename' => $filename
+            ]);
         }
         
-        return back()->with('success','Galería actualizada');
+        return redirect('/profile/' . $user->username)->with('success','Galería actualizada');
     }
 }
