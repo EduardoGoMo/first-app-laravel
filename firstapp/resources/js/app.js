@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
     Dropzone.autoDiscover = false;
     if (dropzoneElement) {
         var myDropzone = new Dropzone(dropzoneElement, {
-            paramName: "file[]",
+            paramName: "file", // El nombre que se usará para enviar el archivo al servidor
             maxFiles: 10,
             maxFilesize: 5, // MB
-            acceptedFiles: '.png,.jpg,.jpeg,.webp,.gif',
+            acceptedFiles: '.png,.jpg,.jpeg,.webp',
             dictDefaultMessage: 'Arrastra las imágenes aquí para subirlas a tu galería',
             dictFallbackMessage: 'Tu navegador no soporta arrastrar y soltar para subir archivos',
             autoProcessQueue: false,
@@ -75,21 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
     owl.owlCarousel({
         loop:true,
         nav:true,
-        center:true,
+        items: 4,
         margin:10,
         responsive:{
-        0:{
-            items:1
-        },
-        600:{
-            items:2
-        },            
-        960:{
-            items:3
-        },
-        1200:{
-            items:4
-        }
+            0:{ items:1 },
+            600:{ items:2 },
+            960:{ items:3 },
+            1200:{ items:4 },
         }
     });
     owl.on('mousewheel', '.owl-stage', function (e) {

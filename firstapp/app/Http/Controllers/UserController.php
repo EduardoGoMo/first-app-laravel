@@ -135,20 +135,20 @@ class UserController extends Controller
     //agregar imágenes a la galería
     public function storeGallery(Request $request){
         $user = auth()->user();
-        $images = $request->validate(['image.*' => ['required','mimes','max:5000']]);
-        
-        foreach ($images as $image) {
-            $filename = $user->id . '-' . uniqid() . '.jpg';
-            
-            Storage::put("public/gallery/" . $filename);
-            
-            $manager = new ImageManager(new Driver());
+        $images = $request->validate([
+            'file' => ['required', 'array'],
+            'file.*' => ['mimes:jpg,jpeg,png,webp', 'max:5000']
+        ]);
+    
+        foreach ($images['file'] as $image) {
+            $filename = $user->id . '-' . uniqid() . '.' . $image->extension();
+            $image->storeAs("public/gallery", $filename);
+
             userImage::create([
                 'user_id' => $user->id,
-                'filename' => $filename
+                'image' => $filename
             ]);
         }
-        
         return redirect('/profile/' . $user->username)->with('success','Galería actualizada');
     }
 }
