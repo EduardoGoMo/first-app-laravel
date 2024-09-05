@@ -12,4 +12,5 @@
             <button class="btn btn-primary">Guardar</button>
             <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancelar</button>
         </form>
+    </div>
 </x-layout>
